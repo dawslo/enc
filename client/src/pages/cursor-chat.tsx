@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { Link } from 'wouter';
 import { useCursorChat } from '@/hooks/use-cursor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 
 export default function CursorChat() {
   const [input, setInput] = useState('');
@@ -23,6 +24,14 @@ export default function CursorChat() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <Link href="/">
+          <a className="inline-flex items-center gap-2 mb-4 text-gray-600 hover:text-gray-900 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            <span>Powrót do gry</span>
+          </a>
+        </Link>
+
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">Cursor AI Chat</CardTitle>

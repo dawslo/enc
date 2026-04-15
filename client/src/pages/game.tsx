@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "wouter";
 import StarsBalance from "@/components/StarsBalance";
 import SpinningWheel from "@/components/SpinningWheel";
 import SpinButton from "@/components/SpinButton";
@@ -98,6 +99,13 @@ export default function GamePage() {
         </div>
 
         <StarsBalance stars={stars} animate={animateBalance} />
+
+        {/* Cursor AI Link */}
+        <Link href="/cursor">
+          <a className="block w-full text-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+            🤖 Chat with Cursor AI
+          </a>
+        </Link>
       </div>
 
       <div className="flex-1 flex items-center justify-center py-4 sm:py-8 min-h-[300px]">
