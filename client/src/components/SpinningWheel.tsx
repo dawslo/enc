@@ -4,6 +4,7 @@ interface WheelSegment {
   stars: number;
   color: string;
   emoji: string;
+  weight: number;
 }
 
 interface SpinningWheelProps {
@@ -12,40 +13,42 @@ interface SpinningWheelProps {
 }
 
 const SEGMENTS: WheelSegment[] = [
-  { stars: 5, color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", emoji: "⭐" },
-  { stars: 10, color: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", emoji: "⭐" },
-  { stars: 15, color: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", emoji: "⭐" },
-  { stars: 20, color: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", emoji: "⭐" },
-  { stars: 25, color: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)", emoji: "⭐" },
-  { stars: 50, color: "linear-gradient(135deg, #30cfd0 0%, #330867 100%)", emoji: "⭐" },
-  { stars: 75, color: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)", emoji: "⭐" },
-  { stars: 100, color: "linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)", emoji: "⭐" },
+  { stars: 5, color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", emoji: "⭐", weight: 35 },
+  { stars: 10, color: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", emoji: "⭐", weight: 25 },
+  { stars: 15, color: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", emoji: "⭐", weight: 14 },
+  { stars: 20, color: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", emoji: "⭐", weight: 10 },
+  { stars: 25, color: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)", emoji: "⭐", weight: 6 },
+  { stars: 50, color: "linear-gradient(135deg, #30cfd0 0%, #330867 100%)", emoji: "⭐", weight: 4 },
+  { stars: 75, color: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)", emoji: "⭐", weight: 3 },
+  { stars: 100, color: "linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)", emoji: "⭐", weight: 3 },
 ];
 
 export default function SpinningWheel({ onSpinComplete, isSpinning }: SpinningWheelProps) {
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (isSpinning) {
-      const weightedRewards = [
-        ...Array(40).fill(5),
-        ...Array(30).fill(10),
-        ...Array(15).fill(15),
-        ...Array(8).fill(20),
-        ...Array(4).fill(25),
-        ...Array(2).fill(50),
-        ...Array(1).fill(75),
-      ];
-      const selectedReward = weightedRewards[Math.floor(Math.random() * weightedRewards.length)];
-      const segmentIndex = SEGMENTS.findIndex(s => s.stars === selectedReward);
-      const segmentAngle = 360 / SEGMENTS.length;
-      const baseRotation = 1800 + (360 * 2);
-      const targetAngle = segmentAngle * segmentIndex + segmentAngle / 2;
-      const finalRotation = baseRotation + (360 - targetAngle);
+      const totalWeight = SEGMENTS.reduce((total, segment) => total + segment.weight, 0);
+      const roll = Math.random() * totalWeight;
 
-      setRotation(finalRotation);
+      let cumulative = 0;
+      let segmentIndex = 0;
+      for (let i = 0; i < SEGMENTS.length; i++) {
+        cumulative += SEGMENTS[i].weight;
+        if (roll <= cumulative) {
+          segmentIndex = i;
+          break;
+        }
+      }
+
+      const selectedReward = SEGMENTS[segmentIndex]?.stars ?? SEGMENTS[0].stars;
+      const segmentAngle = 360 / SEGMENTS.length;
+      const spins = 5 * 360;
+      const targetAngle = segmentAngle * segmentIndex + segmentAngle / 2;
+      const finalRotation = spins + (360 - targetAngle);
+
+      setRotation(prev => prev + finalRotation);
 
       const timeout = setTimeout(() => {
         onSpinComplete?.(selectedReward);

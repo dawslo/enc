@@ -14,5 +14,6 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
+// Use drizzle's inferred types to avoid version skew between zod and drizzle-zod
+export type InsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
